@@ -1,0 +1,32 @@
+spring:
+  logging:
+    level:
+      org.daigc.sharding: debug
+  jpa:
+    show-sql: true
+  datasource:
+    url: jdbc:h2:mem:globe?charset=utf8
+    username: sa
+    password:
+    schema:
+      - schema.sql
+    data:
+      - data.sql
+    slavers:
+      - url: jdbc:h2:mem:globes0
+    shards:
+      shards[0]:
+        master:
+          url: jdbc:h2:mem:local0
+        slavers:
+          - url: jdbc:h2:mem:local0s0
+          - url: jdbc:h2:mem:local0s1
+      shards[1]:
+        master:
+          url: jdbc:h2:mem:local1
+      shards[2]:
+        master:
+          url: jdbc:h2:mem:local2
+      shards[3]:
+        master:
+          url: jdbc:h2:mem:local3
