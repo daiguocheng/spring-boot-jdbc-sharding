@@ -7,7 +7,7 @@
 #### 无缝融合：分片模式与非分片模式可一并使用，也可择一而用
 ## 细节
 #### 线程绑定：动态数据源
-#### 注解&AOP：拦截 CRUD 方法其中 @Sharding 为单分片模式，@Crossing 为跨分片模式
+#### 注解&AOP：拦截 CRUD 方法，其中 @Sharding 为单分片模式，@Crossing 为跨分片模式
 #### SpEL：分片关键字采用含有方法参数的SpEL表达式表示，参考 @Cacheable#key
 #### 哈希算法：选用 MurmurHash3 实现一致性哈希
 ## 限制
