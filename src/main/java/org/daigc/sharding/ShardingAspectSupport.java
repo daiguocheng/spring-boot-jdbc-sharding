@@ -24,17 +24,17 @@ public class ShardingAspectSupport {
 
     @Around("@annotation(org.daigc.sharding.Sharding)")
     public void invoke(ProceedingJoinPoint pjp) {
+        long e = System.currentTimeMillis();
         Method method = ((MethodSignature) pjp.getSignature()).getMethod();
         Sharding sharding = AnnotationUtils.getAnnotation(method, Sharding.class);
         if (sharding.key().isEmpty()) {
             ShardingContext.bind(sharding.writing());
-            return;
-        }
-        long e = System.currentTimeMillis();
-        ParameterNameDiscoverer pnd = new StandardReflectionParameterNameDiscoverer();
-        EvaluationContext context = new MethodBasedEvaluationContext(pjp.getTarget(), method, pjp.getArgs(), pnd);
-        Object key = new SpelExpressionParser().parseExpression(sharding.key()).getValue(context);
-        ShardingContext.bind(key, sharding.writing());
+        } else {
+            ParameterNameDiscoverer pnd = new StandardReflectionParameterNameDiscoverer();
+            EvaluationContext context = new MethodBasedEvaluationContext(pjp.getTarget(), method, pjp.getArgs(), pnd);
+            Object key = new SpelExpressionParser().parseExpression(sharding.key()).getValue(context);
+            ShardingContext.bind(key, sharding.writing());
+        }    
         Object r = null;
         try {
             r = pjp.proceed();
