@@ -17,7 +17,7 @@ public class UserTestMybatis extends AbstractUserTest {
     private UserServiceMybatis userServiceMybatis;
 
     @Override
-    protected UserService getUserServiceJpa() {
+    protected UserService getUserService() {
         return userServiceMybatis;
     }
 

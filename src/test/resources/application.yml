@@ -1,32 +1,32 @@
-spring:
-  logging:
+logging:
     level:
       org.daigc.sharding: debug
+spring:
   jpa:
     show-sql: true
   datasource:
-    url: jdbc:h2:mem:globe?charset=utf8
-    username: sa
-    password:
+    url: jdbc:postgresql://127.0.0.1:5432/globe?connectionTimeout=3&socketTimeout=3
+    username: postgres
+    password: Pi=3.14159
     schema:
       - schema.sql
     data:
       - data.sql
     slavers:
-      - url: jdbc:h2:mem:globes0
+      - url: jdbc:postgresql://127.0.0.1:5432/globes0
     shards:
       shards[0]:
         master:
-          url: jdbc:h2:mem:local0
+          url: jdbc:postgresql://127.0.0.1:5432/local0
         slavers:
-          - url: jdbc:h2:mem:local0s0
-          - url: jdbc:h2:mem:local0s1
+          - url: jdbc:postgresql://127.0.0.1:5432/local0s0
+          - url: jdbc:postgresql://127.0.0.1:5432/local0s1
       shards[1]:
         master:
-          url: jdbc:h2:mem:local1
+          url: jdbc:postgresql://127.0.0.1:5432/local1
       shards[2]:
         master:
-          url: jdbc:h2:mem:local2
+          url: jdbc:postgresql://127.0.0.1:5432/local2
       shards[3]:
         master:
-          url: jdbc:h2:mem:local3
+          url: jdbc:postgresql://127.0.0.1:5432/local3

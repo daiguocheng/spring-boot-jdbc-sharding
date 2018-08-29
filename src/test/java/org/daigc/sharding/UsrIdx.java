@@ -1,17 +1,13 @@
 package org.daigc.sharding;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
 
 @Entity(name = "usr_idx")
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class UsrIdx {
     @Id
     private Long mobile;

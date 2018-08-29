@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +34,11 @@ public class CrossingAspectSupport {
             Object r = null;
             try {
                 r = pjp.proceed();
-                list.add(r);
+                if (r instanceof Collection) {
+                    list.addAll((Collection<?>) r);
+                } else {
+                    list.add(r);
+                }
             } catch (Throwable ex) {
                 if (crossing.throwable()) {
                     throw new RuntimeException(ex);

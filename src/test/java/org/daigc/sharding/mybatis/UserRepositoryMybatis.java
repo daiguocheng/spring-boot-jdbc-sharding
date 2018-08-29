@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface UserRepositoryMybatis {
 
-    @Sharding(key = "#p0.getId()",writing = true)
+    @Sharding(key = "#p0.getId()", writing = true)
     @Insert("insert into usr(id, mobile, name, password, updated) values(#{id}, #{mobile}, #{name}, #{password}, #{updated})")
     Integer insert(Usr usr);
 

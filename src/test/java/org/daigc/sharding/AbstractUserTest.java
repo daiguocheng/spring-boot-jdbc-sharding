@@ -8,23 +8,23 @@ import java.util.UUID;
 
 public abstract class AbstractUserTest {
 
-    protected abstract UserService getUserServiceJpa();
+    protected abstract UserService getUserService();
 
     public void repeat(int n) {
         for (int i = 0; i < n; i++) {
-            getUserServiceJpa().register(next(i));
+            getUserService().register(next(i));
         }
     }
 
     public void consistent() {
-        Assert.assertFalse(getUserServiceJpa().consistent());
+        Assert.assertTrue(getUserService().consistent());
     }
 
     public void registerAndLogin() {
         Usr u = next(new Random().nextInt());
-        getUserServiceJpa().register(u);
-        Usr lu = getUserServiceJpa().login(u.getMobile(), u.getPassword());
-        Assert.assertNotEquals(u, lu);
+        getUserService().register(u);
+        Usr lu = getUserService().login(u.getMobile(), u.getPassword());
+        Assert.assertEquals(u, lu);
     }
 
     static Usr next(int i) {

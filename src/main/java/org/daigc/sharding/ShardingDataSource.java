@@ -69,9 +69,9 @@ public class ShardingDataSource extends AbstractRoutingDataSource implements Env
 
     private void buildAndPut(DataSourceProperties dsp, Map<Object, Object> targetDataSources) {
         String url = dsp.determineUrl();
-        String options = master.determineUrl().substring(master.determineUrl().indexOf(Q));
-        if (url.indexOf(Q) == -1) {
-            url += options;
+        String masterUrl = master.determineUrl();
+        if (url.indexOf(Q) == -1 && masterUrl.indexOf(Q) > -1) {
+            url += masterUrl.substring(masterUrl.indexOf(Q));
         }
         if (targetDataSources.containsKey(url)) {
             return;

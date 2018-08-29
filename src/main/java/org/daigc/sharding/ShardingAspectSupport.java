@@ -34,7 +34,7 @@ public class ShardingAspectSupport {
             EvaluationContext context = new MethodBasedEvaluationContext(pjp.getTarget(), method, pjp.getArgs(), pnd);
             Object key = new SpelExpressionParser().parseExpression(sharding.key()).getValue(context);
             ShardingContext.bind(key, sharding.writing());
-        }    
+        }
         Object r = null;
         try {
             r = pjp.proceed();
