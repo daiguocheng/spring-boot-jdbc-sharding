@@ -12,15 +12,15 @@ import java.util.List;
 @Mapper
 public interface UserIdxRepositoryMybatis {
 
-    @Sharding(key = "#a0.getMobile()", writing = true)
+    @Sharding(key = "#a0.getMobile()")
     @Insert("insert into usr_idx(mobile, id, created) values(#{mobile}, #{id}, #{created})")
     Integer insert(UsrIdx usrIdx);
 
-    @Sharding("#p0")
+    @Sharding(value = "#p0", writing = false)
     @Select("select * from usr_idx where mobile = #{mobile}")
     UsrIdx select(Long mobile);
 
-    @Crossing
+    @Crossing(writing = false)
     @Select("select count(mobile) from usr_idx")
     List<Long> count();
 

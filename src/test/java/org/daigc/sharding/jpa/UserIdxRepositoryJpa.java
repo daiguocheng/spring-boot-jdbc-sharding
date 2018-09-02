@@ -10,13 +10,13 @@ import java.util.Optional;
 
 public interface UserIdxRepositoryJpa extends Repository<UsrIdx, Long> {
 
-    @Sharding(key = "#a0.getMobile()", writing = true)
+    @Sharding(key = "#a0.getMobile()")
     UsrIdx save(UsrIdx userIdx);
 
-    @Sharding(key = "#p0")
+    @Sharding(key = "#p0", writing = false)
     Optional<UsrIdx> findById(Long mobile);
 
-    @Crossing
+    @Crossing(writing = false)
     List<Long> count();
 
 }

@@ -26,5 +26,5 @@ public @interface Sharding {
     /**
      * 当前是否为写操作
      */
-    boolean writing() default false;
+    boolean writing() default true;
 }

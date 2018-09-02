@@ -1,17 +1,18 @@
+--不同的SQL数据库对DDL的支持差异太大，难以移植；以下脚本仅供参考
 DROP DATABASE IF EXISTS globe;
 CREATE DATABASE globe;
 \c globe;
 CREATE TABLE IF NOT EXISTS usr_idx (
     mobile BIGINT not null PRIMARY KEY,
     id VARCHAR(40) not null,
-    created DATETIME not null
+    created TIMESTAMP not null
 );
 CREATE TABLE IF NOT EXISTS usr (
     id VARCHAR(40) not null PRIMARY KEY,
     mobile BIGINT not null,
     name VARCHAR(40) not null,
     password VARCHAR(64) not null,
-    updated DATETIME not null
+    updated TIMESTAMP not null
 );
 
 

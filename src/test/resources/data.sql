@@ -1,3 +1,5 @@
+--不同的SQL数据库对DDL的支持差异太大，难以移植；以下脚本仅供参考
+--模拟从库，测试读操作负载均衡算法
 DROP DATABASE IF EXISTS globes0;
 CREATE DATABASE globes0;
 \c globes0;

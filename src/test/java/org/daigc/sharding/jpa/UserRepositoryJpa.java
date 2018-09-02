@@ -10,13 +10,13 @@ import java.util.Optional;
 
 public interface UserRepositoryJpa extends Repository<Usr, String> {
 
-    @Sharding(key = "#p0.getId()",writing = true)
+    @Sharding(key = "#p0.getId()")
     Usr save(Usr user);
 
-    @Sharding(key = "#a0")
+    @Sharding(key = "#a0", writing = false)
     Optional<Usr> findById(String id);
 
-    @Crossing
+    @Crossing(writing = false)
     List<Long> count();
 
 }
