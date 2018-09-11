@@ -9,10 +9,9 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
 
 @Slf4j
 @Aspect
@@ -27,12 +26,42 @@ public class CrossingAspectSupport {
             log.debug("It start merging for {}.{}({})", clazz, method.getName(), Arrays.toString(pjp.getArgs()));
         }
         Crossing crossing = AnnotationUtils.getAnnotation(method, Crossing.class);
-        List<Object> list = new LinkedList<>();
-        ShardingContext.getShards().forEach(shard -> {
+        Set<MasterSlaversShard> shards = ShardingContext.getShards();
+        return new ForkJoinPool().invoke(new SharkTask(pjp, crossing, shards.toArray(new MasterSlaversShard[shards.size()])));
+    }
+
+
+    static class SharkTask extends RecursiveTask<List<Object>> {
+
+        private ProceedingJoinPoint pjp;
+        private Crossing crossing;
+        private MasterSlaversShard[] shards;
+
+        SharkTask(ProceedingJoinPoint pjp, Crossing crossing, MasterSlaversShard[] shards) {
+            this.pjp = pjp;
+            this.crossing = crossing;
+            this.shards = shards;
+        }
+
+        @Override
+        protected List<Object> compute() {
+            if (shards.length == 1) {
+                return compute(shards[0]);
+            }
+            int middle = shards.length / 2;
+            SharkTask left = new SharkTask(pjp, crossing, Arrays.copyOfRange(shards, 0, middle));
+            left.fork();
+            List<Object> list = new SharkTask(pjp, crossing, Arrays.copyOfRange(shards, middle, shards.length)).compute();
+            list.addAll(left.join());
+            return list;
+        }
+
+        private List<Object> compute(MasterSlaversShard shard) {
+            List<Object> list = new LinkedList<>();
             long e = System.currentTimeMillis();
-            ShardingContext.bind(shard, crossing.writing());
             Object r = null;
             try {
+                ShardingContext.bind(shard, crossing.writing());
                 r = pjp.proceed();
                 if (r instanceof Collection) {
                     list.addAll((Collection<?>) r);
@@ -40,9 +69,6 @@ public class CrossingAspectSupport {
                     list.add(r);
                 }
             } catch (Throwable ex) {
-                if (crossing.throwable()) {
-                    throw new RuntimeException(ex);
-                }
                 if (log.isWarnEnabled()) {
                     log.warn(ex.getMessage(), ex);
                 }
@@ -51,10 +77,10 @@ public class CrossingAspectSupport {
                     e = System.currentTimeMillis() - e;
                     log.debug("It took {} ms for {} from {}", e, r, ShardingContext.getCurrent());
                 }
+                ShardingContext.unbind();
             }
-        });
-        ShardingContext.unbind();
-        return list;
+            return list;
+        }
     }
 
 }

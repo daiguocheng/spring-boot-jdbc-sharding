@@ -14,9 +14,4 @@ public @interface Crossing {
      * 当前是否为写操作
      */
     boolean writing() default true;
-
-    /**
-     * 是否抛出异常；默认记录警告级别日志
-     */
-    boolean throwable() default false;
 }
