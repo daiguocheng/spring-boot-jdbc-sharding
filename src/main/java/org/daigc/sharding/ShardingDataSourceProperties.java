@@ -18,10 +18,10 @@ public class ShardingDataSourceProperties {
     @Setter
     static class Shard {
         private DataSourceProperties master;
-        private Slavers slavers;
+        private Slaves slaves;
     }
 
-    @ConfigurationProperties("spring.datasource.slavers")
-    static class Slavers extends LinkedList<DataSourceProperties> {
+    @ConfigurationProperties("spring.datasource.slaves")
+    static class Slaves extends LinkedList<DataSourceProperties> {
     }
 }

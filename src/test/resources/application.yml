@@ -12,13 +12,13 @@ spring:
       - schema.sql
     data:
       - data.sql
-    slavers:
+    slaves:
       - url: jdbc:postgresql://127.0.0.1:5432/globes0
     shards:
       shards[0]:
         master:
           url: jdbc:postgresql://127.0.0.1:5432/local0
-        slavers:
+        slaves:
           - url: jdbc:postgresql://127.0.0.1:5432/local0s0
           - url: jdbc:postgresql://127.0.0.1:5432/local0s1
       shards[1]:

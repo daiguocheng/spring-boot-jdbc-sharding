@@ -26,8 +26,8 @@ public class CrossingAspectSupport {
             log.debug("It start merging for {}.{}({})", clazz, method.getName(), Arrays.toString(pjp.getArgs()));
         }
         Crossing crossing = AnnotationUtils.getAnnotation(method, Crossing.class);
-        Set<MasterSlaversShard> shards = ShardingContext.getShards();
-        return new ForkJoinPool().invoke(new SharkTask(pjp, crossing, shards.toArray(new MasterSlaversShard[shards.size()])));
+        Set<MasterSlavesShard> shards = ShardingContext.getShards();
+        return new ForkJoinPool().invoke(new SharkTask(pjp, crossing, shards.toArray(new MasterSlavesShard[shards.size()])));
     }
 
 
@@ -35,9 +35,9 @@ public class CrossingAspectSupport {
 
         private ProceedingJoinPoint pjp;
         private Crossing crossing;
-        private MasterSlaversShard[] shards;
+        private MasterSlavesShard[] shards;
 
-        SharkTask(ProceedingJoinPoint pjp, Crossing crossing, MasterSlaversShard[] shards) {
+        SharkTask(ProceedingJoinPoint pjp, Crossing crossing, MasterSlavesShard[] shards) {
             this.pjp = pjp;
             this.crossing = crossing;
             this.shards = shards;
@@ -56,7 +56,7 @@ public class CrossingAspectSupport {
             return list;
         }
 
-        private List<Object> compute(MasterSlaversShard shard) {
+        private List<Object> compute(MasterSlavesShard shard) {
             List<Object> list = new LinkedList<>();
             long e = System.currentTimeMillis();
             Object r = null;

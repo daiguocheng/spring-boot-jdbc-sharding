@@ -14,14 +14,14 @@ import java.util.Map;
 
 
 @Configuration
-@EnableConfigurationProperties({ShardingDataSourceProperties.Slavers.class, ShardingDataSourceProperties.class})
+@EnableConfigurationProperties({ShardingDataSourceProperties.Slaves.class, ShardingDataSourceProperties.class})
 public class ShardingDataSource extends AbstractRoutingDataSource implements EnvironmentAware {
 
     private final static char Q = '?';
     @Autowired
     private DataSourceProperties master;
     @Autowired
-    private ShardingDataSourceProperties.Slavers slavers;
+    private ShardingDataSourceProperties.Slaves slaves;
     @Autowired
     private ShardingDataSourceProperties shards;
 
@@ -37,14 +37,14 @@ public class ShardingDataSource extends AbstractRoutingDataSource implements Env
         }
         Map<Object, Object> targetDataSources = new HashMap<>();
         setTargetDataSources(targetDataSources);
-        MasterSlaversShard globe = new MasterSlaversShard(master.determineUrl());
+        MasterSlavesShard globe = new MasterSlavesShard(master.determineUrl());
         ShardingContext.setGlobe(globe);
         buildAndPut(master, targetDataSources);
         setDefaultTargetDataSource(targetDataSources.get(master.determineUrl()));
-        if (slavers != null) {
-            for (DataSourceProperties slaver : slavers) {
-                globe.addSalver(slaver.determineUrl());
-                buildAndPut(slaver, targetDataSources);
+        if (slaves != null) {
+            for (DataSourceProperties slave : slaves) {
+                globe.addSalve(slave.determineUrl());
+                buildAndPut(slave, targetDataSources);
             }
         }
         if (shards == null || shards.getShards() == null || shards.getShards().length == 0) {
@@ -55,11 +55,11 @@ public class ShardingDataSource extends AbstractRoutingDataSource implements Env
                 throw new RuntimeException("The master is required for a shard.");
             }
             buildAndPut(e.getMaster(), targetDataSources);
-            MasterSlaversShard shard = new MasterSlaversShard(e.getMaster().determineUrl());
-            if (e.getSlavers() != null) {
-                for (DataSourceProperties salver : e.getSlavers()) {
-                    shard.addSalver(salver.determineUrl());
-                    buildAndPut(salver, targetDataSources);
+            MasterSlavesShard shard = new MasterSlavesShard(e.getMaster().determineUrl());
+            if (e.getSlaves() != null) {
+                for (DataSourceProperties salve : e.getSlaves()) {
+                    shard.addSalve(salve.determineUrl());
+                    buildAndPut(salve, targetDataSources);
                 }
             }
             ShardingContext.add(shard);

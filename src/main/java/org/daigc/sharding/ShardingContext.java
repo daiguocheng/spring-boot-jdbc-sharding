@@ -5,19 +5,19 @@ import java.util.*;
 abstract class ShardingContext {
 
     private final static ThreadLocal<String> CURRENT = ThreadLocal.withInitial(() -> null);
-    private final static SortedMap<Integer, MasterSlaversShard> SHARDS = new TreeMap<>();
-    private static MasterSlaversShard GLOBE;
+    private final static SortedMap<Integer, MasterSlavesShard> SHARDS = new TreeMap<>();
+    private static MasterSlavesShard GLOBE;
 
 
     static String getCurrent() {
         return CURRENT.get() == null ? GLOBE.getMaster() : CURRENT.get();
     }
 
-    static Set<MasterSlaversShard> getShards() {
+    static Set<MasterSlavesShard> getShards() {
         return new HashSet<>(SHARDS.values());
     }
 
-    static void bind(MasterSlaversShard shard, boolean writing) {
+    static void bind(MasterSlavesShard shard, boolean writing) {
         if (writing) {
             CURRENT.set(shard.getMaster());
             return;
@@ -29,13 +29,13 @@ abstract class ShardingContext {
         CURRENT.set(null);
     }
 
-    static void add(MasterSlaversShard shard) {
+    static void add(MasterSlavesShard shard) {
         for (int i = 0; i < Byte.MAX_VALUE; i++) {
             SHARDS.put(hash(shard.toString(i)), shard);
         }
     }
 
-    static void setGlobe(MasterSlaversShard shard) {
+    static void setGlobe(MasterSlavesShard shard) {
         GLOBE = shard;
     }
 
@@ -43,8 +43,8 @@ abstract class ShardingContext {
         if (SHARDS.isEmpty()) {
             throw new RuntimeException("Not any data sources for sharding!");
         }
-        SortedMap<Integer, MasterSlaversShard> tail = SHARDS.tailMap(hash(key));
-        MasterSlaversShard shard = tail.isEmpty() ? SHARDS.get(SHARDS.firstKey()) : tail.get(tail.firstKey());
+        SortedMap<Integer, MasterSlavesShard> tail = SHARDS.tailMap(hash(key));
+        MasterSlavesShard shard = tail.isEmpty() ? SHARDS.get(SHARDS.firstKey()) : tail.get(tail.firstKey());
         bind(shard, writing);
     }
 

@@ -7,33 +7,33 @@ import java.util.Random;
 import java.util.Set;
 
 @Getter
-class MasterSlaversShard {
+class MasterSlavesShard {
 
     private String master;
-    private Set<String> slavers;
+    private Set<String> slaves;
 
-    MasterSlaversShard(String master) {
+    MasterSlavesShard(String master) {
         this.master = master;
     }
 
-    void addSalver(String slaver) {
-        if (master.equals(slaver) || master.startsWith(slaver)) {
+    void addSalve(String slave) {
+        if (master.equals(slave) || master.startsWith(slave)) {
             return;
         }
-        if (slavers == null) {
-            slavers = new HashSet<>();
+        if (slaves == null) {
+            slaves = new HashSet<>();
         }
-        slavers.add(slaver);
+        slaves.add(slave);
     }
 
     String getNextReadonly() {
-        if (slavers == null || slavers.isEmpty()) {
+        if (slaves == null || slaves.isEmpty()) {
             return master;
         }
         int weight = 2, j = 0;
-        String[] urls = new String[weight * slavers.size() + 1];
+        String[] urls = new String[weight * slaves.size() + 1];
         for (int i = 0; i < weight; i++) {
-            for (String slaver : slavers) {
+            for (String slaver : slaves) {
                 urls[j++] = slaver;
             }
         }
@@ -42,10 +42,10 @@ class MasterSlaversShard {
     }
 
     String toString(int i) {
-        if (slavers == null || slavers.isEmpty()) {
+        if (slaves == null || slaves.isEmpty()) {
             return String.format("%s-%d", master, i);
         }
-        return String.format("%s-%d-%s", master, i, slavers);
+        return String.format("%s-%d-%s", master, i, slaves);
     }
 
 }
